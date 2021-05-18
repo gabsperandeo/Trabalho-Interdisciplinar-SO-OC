@@ -23,7 +23,7 @@ def get_size(bytes, suffix="B"):
 
 # função que mostra sobre o Sistema Operacional e a Arquitetura do computador
 def OS_architeture_information():
-    print('Arquitetura: ', platform.architecture())
+    print('\n\n\nArquitetura: ', platform.architecture())
     print('Plataforma: ', platform.platform())
     print('Informações Plataforma: ', platform.machine())
     print('Informações do Sistema: ', platform.system() + ' ' + platform.release())
@@ -37,6 +37,8 @@ def processor_information():
         # pegando o nome do processador
         access_key = winreg.OpenKey(access_registry, r"HARDWARE\DESCRIPTION\System\CentralProcessor\0")
         print('Nome do processador: ', winreg.QueryValueEx(access_key, 'ProcessorNameString'))
+    else:
+        print("\nAlerta! Informações de 'Nome do Processador' para o ambiente Linux ainda não são suportadas nesta versão. Aguarde novas atualizações!\n")
 
     print('Processador: ', platform.processor())
     print('Cores: ', multiprocessing.cpu_count())
@@ -76,6 +78,8 @@ def disks_information():
         # mostrando HD ou SSD
         access_key_disk = winreg.OpenKey(access_registry, r"HARDWARE\DEVICEMAP\Scsi\Scsi Port 0\Scsi Bus 0\Target Id 0\Logical Unit Id 0")
         print('HD ou SSD: ', winreg.QueryValueEx(access_key_disk, 'Identifier'))
+    else:
+        print("\nAlerta! Informações de Nome do HD/SSD para o ambiente Linux ainda não são suportadas nesta versão. Aguarde novas atualizações!\n")
 
     print("=" * 40, "Informações do Disco", "=" * 40)
     print("Partições e Uso:")
