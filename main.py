@@ -10,6 +10,10 @@ Autores: Felipe Rocha de Oliveira
 import platform
 import multiprocessing
 import psutil
+import pandas as pd
+import time
+import datetime
+from datetime import date
 
 # funções
 # função que faz a conversão de bytes no formato apropriado, dependendo do tamanho
@@ -111,3 +115,46 @@ OS_architeture_information()
 processor_information()
 memory_information()
 disks_information()
+
+# abertura do arquivo
+arq = 'dataset.csv'
+number_lines = sum(1 for row in (open(arq, 'r', encoding="utf8")))  # quantidade de linhas do arquivo
+rowsize = int((number_lines)/4)
+
+'''
+for i in range(1, number_lines, rowsize):
+    df = pd.read_csv(arq,
+        header = None,
+        nrows = rowsize,#number of rows to read at each loop
+        skiprows = i,#skip rows that have been read
+        dtype = 'unicode')
+
+    out_csv = 'input' + str(i) + '.csv'
+
+    df.to_csv(out_csv,
+    index = False,
+    header = False,
+    mode = 'a',  # append data to csv file
+    chunksize = rowsize)  # size of data to append for each loop
+'''
+
+matriz_dataset = []
+
+# etapa 1: leitura e carga em memória do arquivo
+print("=========== ETAPA 1 ===========")
+print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
+inicio_etapa1 = time.time()
+
+# particionando o arquivo em 4 para ler e armazenar na matriz
+for i in range(0, number_lines, rowsize):
+    df = pd.read_csv(arq,
+        header = None,
+        nrows = rowsize, # número de linhas que serão lidas a cada iteração
+        skiprows = i, # pular as linhas que já foram lidas
+        dtype = 'unicode')
+
+    matriz_dataset.append(df.values.tolist())
+
+duracao_etapa1 = time.time() - inicio_etapa1
+print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
+print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa1))))
