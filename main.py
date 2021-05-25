@@ -148,7 +148,7 @@ print("=========== ETAPA 1 ===========")
 print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 inicio_etapa1 = time.time()
 
-# particionando o arquivo em 4 para ler e armazenar na matriz
+# particionando o arquivo em 6 para ler e armazenar na matriz
 for i in range(0, number_lines, rowsize):
     df = pd.read_csv(arq,
         header = None,
@@ -163,12 +163,7 @@ print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa1))))
 
 # guardando o nome das colunas
-for i in matriz_dataset:
-    nome_colunas = i.pop(0)
-print(nome_colunas)
-
-print(matriz_dataset[0][0])
-print(matriz_dataset[1][0])
+nome_colunas = matriz_dataset[0].pop(0)
 
 # etapa 2
 
