@@ -107,6 +107,15 @@ def disks_information():
     print(f"Total escrito: {get_size(disk_io.write_bytes)}", "\n")
 
 
+# função que verifica se a string é um float
+def string_is_float(word):
+    try:
+        float(word)
+        return True
+    except ValueError:
+        return False
+
+
 # função que devolve o total de palavras existentes nesta coluna
 #def count_column_words(matriz_dataset):
 
@@ -166,13 +175,15 @@ print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_eta
 nome_colunas = matriz_dataset[0].pop(0)
 
 # etapa 2
-
+'''
 for i in matriz_dataset:    # iterando por particionamento
     for j in i:             # iterando por linha do particionamento
         for k in j:         # iterando por coluna do particionamento
-            if (k.isnumeric()):
-                print(k, ' É numero')
-                # chamar a função count_column_words
-            else:
-                print(k, ' Não é numero')
-                # chamar a função count_column_words
+            if (not(string_is_float(k))):
+                count_column_words(matriz_dataset)
+'''
+
+# verificando se os valores das colunas da primeira linha são números ou não e setando no column_is_num
+column_is_num = []
+for j in range(0, 25):
+    column_is_num.append(string_is_float(matriz_dataset[0][0][j]))
