@@ -55,10 +55,10 @@ def processor_information():
 
 # função que mostra detalhes da memória, swap (se existir)
 def memory_information():
-    # Memory Information
+    # informação da memória
     print("=" * 40, "Informação da Memória", "=" * 40, "\n")
 
-    # get the memory details
+    # pegando os detalhes da memória principal
     svmem = psutil.virtual_memory()
     print(f"Total: {get_size(svmem.total)}")
     print(f"Disponível: {get_size(svmem.available)}")
@@ -66,7 +66,7 @@ def memory_information():
     print(f"Porcentagem: {svmem.percent}%", "\n")
     print("=" * 20, "SWAP", "=" * 20, "\n")
 
-    # get the swap memory details (if exists)
+    # caso haja, pegando detalhes da memória swap
     swap = psutil.swap_memory()
     print(f"Total: {get_size(swap.total)}")
     print(f"Free: {get_size(swap.free)}")
@@ -87,7 +87,6 @@ def disks_information():
 
     print("=" * 40, "Informações do Disco", "=" * 40)
     print("Partições e Uso:")
-    # get all disk partitions
     partitions = psutil.disk_partitions()
     for partition in partitions:
         print(f"=== Dispositivo: {partition.device} ===", "\n")
@@ -96,8 +95,6 @@ def disks_information():
         try:
             partition_usage = psutil.disk_usage(partition.mountpoint)
         except PermissionError:
-            # this can be catched due to the disk that
-            # isn't ready
             continue
         print(f"  Tamanho total: {get_size(partition_usage.total)}")
         print(f"  Usado: {get_size(partition_usage.used)}")
@@ -110,16 +107,22 @@ def disks_information():
     print(f"Total escrito: {get_size(disk_io.write_bytes)}", "\n")
 
 
-# MAIN
+# função que devolve o total de palavras existentes nesta coluna
+#def count_column_words(matriz_dataset):
+
+
+
+# ===== MAIN =====
 OS_architeture_information()
 processor_information()
 memory_information()
 disks_information()
 
+# etapa 1
 # abertura do arquivo
 arq = 'dataset.csv'
 number_lines = sum(1 for row in (open(arq, 'r', encoding="utf8")))  # quantidade de linhas do arquivo
-rowsize = int((number_lines)/4)
+rowsize = int((number_lines)/6)
 
 '''
 for i in range(1, number_lines, rowsize):
@@ -140,7 +143,7 @@ for i in range(1, number_lines, rowsize):
 
 matriz_dataset = []
 
-# etapa 1: leitura e carga em memória do arquivo
+# leitura e armazenamento dos dados em uma matriz
 print("=========== ETAPA 1 ===========")
 print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 inicio_etapa1 = time.time()
@@ -158,3 +161,23 @@ for i in range(0, number_lines, rowsize):
 duracao_etapa1 = time.time() - inicio_etapa1
 print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa1))))
+
+# guardando o nome das colunas
+for i in matriz_dataset:
+    nome_colunas = i.pop(0)
+print(nome_colunas)
+
+print(matriz_dataset[0][0])
+print(matriz_dataset[1][0])
+
+# etapa 2
+
+for i in matriz_dataset:    # iterando por particionamento
+    for j in i:             # iterando por linha do particionamento
+        for k in j:         # iterando por coluna do particionamento
+            if (k.isnumeric()):
+                print(k, ' É numero')
+                # chamar a função count_column_words
+            else:
+                print(k, ' Não é numero')
+                # chamar a função count_column_words
