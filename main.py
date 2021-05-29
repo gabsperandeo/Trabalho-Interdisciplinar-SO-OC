@@ -14,6 +14,7 @@ import pandas as pd
 import time
 import datetime
 from datetime import date
+import concurrent.futures
 
 # funções
 # função que faz a conversão de bytes no formato apropriado, dependendo do tamanho
@@ -117,7 +118,18 @@ def string_is_float(word):
 
 
 # função que devolve o total de palavras existentes nesta coluna
-#def count_column_words(matriz_dataset):
+def words_count(argumentos):
+    if (not string_is_float(argumentos)):
+        return len(argumentos.split())
+    else:
+        return 0
+
+# função que faz com que as threads executem a words_count
+def all_words_count(valor):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3096) as executor:
+        future = executor.submit(words_count, valor)
+        return future.result()
+
 
 
 
@@ -175,15 +187,21 @@ print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_eta
 nome_colunas = matriz_dataset[0].pop(0)
 
 # etapa 2
-'''
-for i in matriz_dataset:    # iterando por particionamento
-    for j in i:             # iterando por linha do particionamento
-        for k in j:         # iterando por coluna do particionamento
-            if (not(string_is_float(k))):
-                count_column_words(matriz_dataset)
-'''
-
 # verificando se os valores das colunas da primeira linha são números ou não e setando no column_is_num
-column_is_num = []
-for j in range(0, 25):
-    column_is_num.append(string_is_float(matriz_dataset[0][0][j]))
+count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
+inicio_etapa2 = time.time()
+
+for particao in matriz_dataset:     # iterando por particionamento
+    for linha in particao:          # iterando por linha do particionamento
+      index = 0
+      for valor in linha:           # iterando por coluna do particionamento
+        count_array[index] += all_words_count(valor)
+        index += 1
+
+duracao_etapa2 = time.time() - inicio_etapa2
+print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
+print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa1))))
+
+print(count_array)
