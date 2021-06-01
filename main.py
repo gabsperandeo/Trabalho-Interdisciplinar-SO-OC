@@ -145,23 +145,6 @@ arq = 'dataset.csv'
 number_lines = sum(1 for row in (open(arq, 'r', encoding="utf8")))  # quantidade de linhas do arquivo
 rowsize = int((number_lines)/6)
 
-'''
-for i in range(1, number_lines, rowsize):
-    df = pd.read_csv(arq,
-        header = None,
-        nrows = rowsize,#number of rows to read at each loop
-        skiprows = i,#skip rows that have been read
-        dtype = 'unicode')
-
-    out_csv = 'input' + str(i) + '.csv'
-
-    df.to_csv(out_csv,
-    index = False,
-    header = False,
-    mode = 'a',  # append data to csv file
-    chunksize = rowsize)  # size of data to append for each loop
-'''
-
 matriz_dataset = []
 
 # leitura e armazenamento dos dados em uma matriz
@@ -186,10 +169,12 @@ print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_eta
 # guardando o nome das colunas
 nome_colunas = matriz_dataset[0].pop(0)
 
+'''
 # etapa 2
 # verificando se os valores das colunas da primeira linha são números ou não e setando no column_is_num
 count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+print("=========== ETAPA 1 ===========")
 print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 inicio_etapa2 = time.time()
 
@@ -202,6 +187,27 @@ for particao in matriz_dataset:     # iterando por particionamento
 
 duracao_etapa2 = time.time() - inicio_etapa2
 print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
-print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa1))))
+print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa2))))
 
 print(count_array)
+'''
+
+# etapa 3
+print("=========== ETAPA 3 ===========")
+print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
+inicio_etapa3 = time.time()
+
+tam = len(nome_colunas) # quantidade de colunas do dataset
+
+#Lendo o arquivo particionado e escrevendo as colunas em arquivos criados para cada coluna
+for particao in range(0, len(matriz_dataset)):
+    for col in range(0, tam): #todas as colunas
+        arq = open('C:/Users/Gabrielle/PycharmProjects/SO-OC/' + nome_colunas[col] + '.txt', 'a')
+        for lin in range(0, len(matriz_dataset[particao])): #a partir do '0' para desconsiderar o header
+          arq.write(str(matriz_dataset[particao][lin][col]))
+          arq.write('\n')
+    arq.close()
+
+duracao_etapa3 = time.time() - inicio_etapa3
+print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
+print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa3))))
