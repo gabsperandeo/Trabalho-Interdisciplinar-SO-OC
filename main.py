@@ -14,7 +14,7 @@ import pandas as pd
 import time
 import datetime
 from datetime import date
-import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
 
 # funções
 # função que faz a conversão de bytes no formato apropriado, dependendo do tamanho
@@ -117,20 +117,18 @@ def string_is_float(word):
         return False
 
 
-# função que devolve o total de palavras existentes nesta coluna
-def words_count(argumentos):
-    if (not string_is_float(argumentos)):
-        return len(argumentos.split())
-    else:
-        return 0
-
-# função que faz com que as threads executem a words_count
-def all_words_count(valor):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3096) as executor:
-        future = executor.submit(words_count, valor)
-        return future.result()
+def contaPalavra(linha, i):
+    contador = 0
+    for palavra in linha.split(','):
+        if not palavra.isdigit():
+            contador += 1
+    return contador
 
 
+def lerLinha():
+    with open(r"C:\Users\Gabrielle\PycharmProjects\SO-OC\dataset.csv", 'r', encoding='utf-8') as f:
+        for line in f:
+            yield line
 
 
 # ===== MAIN =====
@@ -169,28 +167,25 @@ print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_eta
 # guardando o nome das colunas
 nome_colunas = matriz_dataset[0].pop(0)
 
-'''
-# etapa 2
-# verificando se os valores das colunas da primeira linha são números ou não e setando no column_is_num
-count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-print("=========== ETAPA 1 ===========")
+# etapa 2
+palavras = 0
+palavra = []
+i = 0
+
+print("=========== ETAPA 2 ===========")
 print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 inicio_etapa2 = time.time()
 
-for particao in matriz_dataset:     # iterando por particionamento
-    for linha in particao:          # iterando por linha do particionamento
-      index = 0
-      for valor in linha:           # iterando por coluna do particionamento
-        count_array[index] += all_words_count(valor)
-        index += 1
+# piscina de threads para executar a contagem de palavras
+with ThreadPoolExecutor(max_workers=64) as t:
+    for linha in lerLinha():
+        palavras += t.submit(contaPalavra, linha, i).result()
+        i += 1
 
 duracao_etapa2 = time.time() - inicio_etapa2
 print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa2))))
-
-print(count_array)
-'''
 
 # etapa 3
 print("=========== ETAPA 3 ===========")
