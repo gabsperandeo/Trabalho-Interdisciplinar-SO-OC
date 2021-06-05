@@ -108,25 +108,21 @@ def disks_information():
     print(f"Total escrito: {get_size(disk_io.write_bytes)}", "\n")
 
 
-# função que verifica se a string é um float
-def string_is_float(word):
-    try:
-        float(word)
-        return True
-    except ValueError:
-        return False
-
-
-def contaPalavra(linha, i):
-    contador = 0
+# função que faz a contagem de palavras por linha
+def contaPalavra(linha):
+    count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    k = 0
     for palavra in linha.split(','):
         if not palavra.isdigit():
-            contador += 1
-    return contador
+            count_array[k] += len(palavra.split())
+
+        k += 1  # para iterar para a próxima coluna
+    return count_array
 
 
+# função auxiliar que faz a leitura do arquivo gerando as linhas
 def lerLinha():
-    with open(r"C:\Users\Gabrielle\PycharmProjects\SO-OC\dataset.csv", 'r', encoding='utf-8') as f:
+    with open(r".\dataset.csv", 'r', encoding='utf-8') as f:
         for line in f:
             yield line
 
@@ -169,20 +165,25 @@ nome_colunas = matriz_dataset[0].pop(0)
 
 
 # etapa 2
-palavras = 0
-palavra = []
-i = 0
-
 print("=========== ETAPA 2 ===========")
 print("Inicio Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 inicio_etapa2 = time.time()
 
-# piscina de threads para executar a contagem de palavras
-with ThreadPoolExecutor(max_workers=64) as t:
-    for linha in lerLinha():
-        palavras += t.submit(contaPalavra, linha, i).result()
-        i += 1
+lists = []
+count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+# piscina de threads para executar a contagem de palavras com o auxílio da função lerLinha
+with ThreadPoolExecutor(max_workers=12) as t:
+    for linha in lerLinha():
+        lists.append(t.submit(contaPalavra, linha).result())
+
+    count_array = [sum(x) for x in zip(*lists)] # fazendo a soma da contagem das listas de listas a fim de
+                                                # somar as palavras de cada coluna
+# subtraindo 1 do cabeçalho na contagem de palavras
+for col in range(len(count_array)):
+    count_array[col] -= 1
+
+print(count_array)
 duracao_etapa2 = time.time() - inicio_etapa2
 print("Fim Etapa: ", date.today(), time.strftime("%H:%M:%S", time.localtime()))
 print("Duração da Etapa: ", str(datetime.timedelta(seconds = round(duracao_etapa2))))
@@ -197,10 +198,12 @@ tam = len(nome_colunas) # quantidade de colunas do dataset
 #Lendo o arquivo particionado e escrevendo as colunas em arquivos criados para cada coluna
 for particao in range(0, len(matriz_dataset)):
     for col in range(0, tam): #todas as colunas
-        arq = open('C:/Users/Gabrielle/PycharmProjects/SO-OC/' + nome_colunas[col] + '.txt', 'a')
+        arq = open('./' + nome_colunas[col] + '.txt', 'a')
         for lin in range(0, len(matriz_dataset[particao])): #a partir do '0' para desconsiderar o header
-          arq.write(str(matriz_dataset[particao][lin][col]))
-          arq.write('\n')
+            arq.write(str(matriz_dataset[particao][lin][col]))
+            arq.write('\n')
+
+        arq.write('Contagem de palavras desta coluna: ' + str(count_array[col]))
     arq.close()
 
 duracao_etapa3 = time.time() - inicio_etapa3
