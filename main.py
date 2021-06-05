@@ -208,8 +208,8 @@ for particao in range(0, len(matriz_dataset)):
 
 # gravando a quantidade de palavras por coluna nos arquivos
 for i in range(0, len(nome_colunas)):
-    arq = open('./' + nome_colunas[col] + '.txt', 'a')
-    arq.write('Contagem de palavras desta coluna: ' + str(count_array[col]))
+    arq = open('./' + nome_colunas[i] + '.txt', 'a')
+    arq.write('Contagem de palavras desta coluna: ' + str(count_array[i]))
     arq.close()
 
 duracao_etapa3 = time.time() - inicio_etapa3
