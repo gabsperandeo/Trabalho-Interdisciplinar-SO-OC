@@ -123,7 +123,7 @@ def contaPalavra(linha):
 
 # função auxiliar que faz a leitura do arquivo gerando as linhas
 def lerLinha():
-    with open(r".\dataset.csv", 'r', encoding='utf-8') as f:
+    with open(r"dataset.csv", 'r', encoding='utf-8') as f:
         for line in f:
             yield line
 
