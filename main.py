@@ -47,11 +47,12 @@ def processor_information():
 
     print('Processador: ', platform.processor())
     print('Cores: ', multiprocessing.cpu_count())
-    freq = psutil.cpu_freq()
+    
+    #freq = psutil.cpu_freq()
 
-    print('\nFrequência Processador\n\tAtual: ', freq[0], 'MHz',
-          '\n\tMínima: ', freq[1], 'MHz',
-          '\n\tMáxima: ', freq[2], 'MHz', "\n")
+    #print('\nFrequência Processador\n\tAtual: ', freq[0], 'MHz',
+     #     '\n\tMínima: ', freq[1], 'MHz',
+     #     '\n\tMáxima: ', freq[2], 'MHz', "\n")
 
 
 # função que mostra detalhes da memória, swap (se existir)
@@ -103,9 +104,9 @@ def disks_information():
         print(f"  Porcentagem: {partition_usage.percent}%", "\n")
 
     # get IO statistics since boot
-    disk_io = psutil.disk_io_counters()
-    print(f"Total lido: {get_size(disk_io.read_bytes)}")
-    print(f"Total escrito: {get_size(disk_io.write_bytes)}", "\n")
+    #disk_io = psutil.disk_io_counters()
+    #print(f"Total lido: {get_size(disk_io.read_bytes)}")
+    #print(f"Total escrito: {get_size(disk_io.write_bytes)}", "\n")
 
 
 # função que faz a contagem de palavras por linha
@@ -122,7 +123,7 @@ def contaPalavra(linha):
 
 # função auxiliar que faz a leitura do arquivo gerando as linhas
 def lerLinha():
-    with open(r".\dataset.csv", 'r', encoding='utf-8') as f:
+    with open(r"dataset.csv", 'r', encoding='utf-8') as f:
         for line in f:
             yield line
 
@@ -173,7 +174,7 @@ lists = []
 count_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 # piscina de threads para executar a contagem de palavras com o auxílio da função lerLinha
-with ThreadPoolExecutor(max_workers=12) as t:
+with ThreadPoolExecutor(max_workers=8) as t:
     for linha in lerLinha():
         lists.append(t.submit(contaPalavra, linha).result())
 
