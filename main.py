@@ -195,7 +195,7 @@ inicio_etapa3 = time.time()
 
 tam = len(nome_colunas) # quantidade de colunas do dataset
 
-#Lendo o arquivo particionado e escrevendo as colunas em arquivos criados para cada coluna
+# lendo o arquivo particionado e escrevendo as colunas em arquivos criados para cada coluna
 for particao in range(0, len(matriz_dataset)):
     for col in range(0, tam): #todas as colunas
         arq = open('./' + nome_colunas[col] + '.txt', 'a')
@@ -203,7 +203,12 @@ for particao in range(0, len(matriz_dataset)):
             arq.write(str(matriz_dataset[particao][lin][col]))
             arq.write('\n')
 
-        arq.write('Contagem de palavras desta coluna: ' + str(count_array[col]))
+    arq.close()
+
+# gravando a quantidade de palavras por coluna nos arquivos
+for i in range(0, len(nome_colunas)):
+    arq = open('./' + nome_colunas[col] + '.txt', 'a')
+    arq.write('Contagem de palavras desta coluna: ' + str(count_array[col]))
     arq.close()
 
 duracao_etapa3 = time.time() - inicio_etapa3
