@@ -71,9 +71,9 @@ def memory_information():
     # caso haja, pegando detalhes da memória swap
     swap = psutil.swap_memory()
     print(f"Total: {get_size(swap.total)}")
-    print(f"Free: {get_size(swap.free)}")
-    print(f"Used: {get_size(swap.used)}")
-    print(f"Percentage: {swap.percent}%", "\n")
+    print(f"Disponível: {get_size(swap.free)}")
+    print(f"Usado: {get_size(swap.used)}")
+    print(f"Porcentagem: {swap.percent}%", "\n")
 
 
 # função que traz as informações dos discos
